@@ -1,0 +1,42 @@
+{
+  "name": "threejs-geometry-transcode-format-to-custom-binary",
+  "version": "1.0.0",
+  "description": "A module to help translate threejs json mesh geometry into a custom binary format.",
+  "main": "index.js",
+  "license": "MIT",
+  "author": {
+    "name": "Tomasz Dysinski",
+    "email": "oz@bunnybones.com",
+    "url": "https://github.com/bunnybones1"
+  },
+  "dependencies": {
+    "enum-buffer-array-types": "^2.0.0",
+    "map-stream": "0.0.5",
+    "typedarray-to-buffer": "^3.0.1",
+    "vinyl-fs": "^0.3.13",
+    "zlib": "^1.0.5"
+  },
+  "devDependencies": {
+    "loadandrunscripts": "^1.0.0",
+    "threejs-managed-view": "^4.0.1"
+  },
+  "scripts": {
+    "test": "node test.js",
+    "debug": "node-debug test.js"
+  },
+  "keywords": [
+    "threejs",
+    "mesh",
+    "geometry",
+    "format",
+    "binary"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/bunnybones1/threejs-geometry-transcode-format-to-custom-binary.git"
+  },
+  "homepage": "https://github.com/bunnybones1/threejs-geometry-transcode-format-to-custom-binary",
+  "bugs": {
+    "url": "https://github.com/bunnybones1/threejs-geometry-transcode-format-to-custom-binary/issues"
+  }
+}
