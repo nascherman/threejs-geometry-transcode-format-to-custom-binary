@@ -15,7 +15,9 @@ var toBuffer = require('typedarray-to-buffer'),
 var threeGeometryJSONLoader = new THREE.JSONLoader();
 var renderer = new THREE.WebGLRenderer();
 var scene = new THREE.Scene();
-var camera = new THREE.PerspectiveCamera();
+var camera = new THREE.PerspectiveCamera(90, 1, .1, 5000);
+camera.position.set(0, -10, -2000);
+camera.lookAt(new THREE.Vector3());
 
 exportGeometryGroup = function(_geometryGroup) {
 	geometryGroup = _geometryGroup;
@@ -192,8 +194,10 @@ function transcodeJsonToBinary(jsonString, callback) {
 	var material = new THREE.MeshBasicMaterial({
 		vertexColors: THREE.VertexColors
 	});
-	scene.add(new THREE.Mesh(geometry, material));
+	var mesh = new THREE.Mesh(geometry, material);
+	scene.add(mesh);
 	renderer.render(scene, camera);
+	scene.remove(mesh);
 
 	var buffers = {};
 	Object.keys(geometryGroup).forEach(function(key) {
@@ -210,6 +214,24 @@ function transcodeJsonToBinary(jsonString, callback) {
 		}
 	});
 
+
+	function previewValues(name, arr, count) {
+		var str = '' + arr[0];
+		for (var i = 1; i < count; i++) {
+			str += ',' + arr[i];
+		};
+		console.log(name + ': ['+str+']');
+	}
+
+	function checkValues(name, arr, count) {
+		var anythingThere = arr[0];
+		var good = false;
+		for (var i = 1; i < count; i++) {
+			if(arr[i] !== anythingThere) good = true;
+		};
+		if(!good) console.log('EMPTY:', name, anythingThere);
+	}
+
 	Object.keys(buffers).forEach(function(key) {
 		var prop = buffers[key];
 		if(swizzleYZLegend.indexOf(key) !== -1) swizzleYZ(prop);
@@ -219,7 +241,10 @@ function transcodeJsonToBinary(jsonString, callback) {
 			buffer: toBuffer(prop),
 			type: type
 		}
+		// previewValues(key, prop, 20);
+		checkValues(key, prop, 20);
 	})
+
 
 
 	var error;

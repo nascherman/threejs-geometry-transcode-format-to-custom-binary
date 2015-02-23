@@ -4,12 +4,12 @@ var transcode = require('./transcode'),
   zlib = require('zlib'),
   map = require('map-stream');
 
-function processOneGeometry(path, shouldDeflate, callback) {
-  console.log('processing', path, shouldDeflate ? 'with deflation' : '');
-  var pipe = fs.src(path)
+function processOneGeometry(srcPath, shouldDeflate, callback) {
+  console.log('processing', srcPath, shouldDeflate ? 'with deflation' : '');
+  var pipe = fs.src(srcPath)
   	.pipe(map(transcodePipe));
     if(shouldDeflate) pipe = pipe.pipe(map(deflate));
-  	pipe.pipe(fs.dest('./assets'))
+  	pipe.pipe(fs.dest(path.dirname(srcPath)))
   	.on('end', callback);
 }
 
