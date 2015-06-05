@@ -13,8 +13,7 @@
     "enum-buffer-array-types": "^2.0.0",
     "map-stream": "0.0.5",
     "typedarray-to-buffer": "^3.0.1",
-    "vinyl-fs": "^0.3.13",
-    "zlib": "^1.0.5"
+    "vinyl-fs": "^0.3.13"
   },
   "devDependencies": {
     "loadandrunscripts": "^1.0.0",
