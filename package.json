@@ -1,6 +1,6 @@
 {
   "name": "threejs-geometry-transcode-format-to-custom-binary",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "A module to help translate threejs json mesh geometry into a custom binary format.",
   "main": "index.js",
   "license": "MIT",
