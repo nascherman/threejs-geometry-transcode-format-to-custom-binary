@@ -3,6 +3,8 @@ var  fs = require('vinyl-fs');
 var path = require('path');
 var zlib = require('zlib');
 var map = require('map-stream');
+document = MockBrowser.createDocument();
+
 
 function processOneGeometry(srcPath, shouldDeflate, callback) {
   console.log('processing', srcPath, shouldDeflate ? 'with deflation' : '');
@@ -16,6 +18,7 @@ function processOneGeometry(srcPath, shouldDeflate, callback) {
 function transcodePipe (file, cb) {
   
   var div = document.createElement('div');
+
   div.innerHTML = file.contents;
   var svg = div.querySelector('svg');
   if (!svg) return cb(new Error('svg not present in resource'));

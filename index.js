@@ -1,10 +1,8 @@
 var directorySearch = require('directory-search');
-var MockBrowser = require('mock-browser').mocks.MockBrowser;
-var mock = new MockBrowser();
-GLOBAL.window = MockBrowser.createWindow();
+MockBrowser = require('mock-browser').mocks.MockBrowser;
+window = MockBrowser.createWindow();
 THREE = require('three');
 var ProcessGeometry = require('./process');
-var loadSvgAsMesh = require('./util/load-as-mesh');
 
 
 if(!process.argv[2]) {
@@ -22,7 +20,6 @@ directorySearch(process.argv[2], '.' + process.argv[3], function(err, results) {
     return;
   }
   else {
-
     ProcessGeometry(results,true, function() {
       console.log('done');
     });
