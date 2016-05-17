@@ -10,8 +10,12 @@
     "url": "https://github.com/bunnybones1"
   },
   "dependencies": {
+    "directory-search": "0.0.32",
     "enum-buffer-array-types": "^2.0.0",
+    "load-svg": "^1.0.0",
     "map-stream": "0.0.5",
+    "mock-browser": "^0.92.11",
+    "three": "^0.75.0",
     "typedarray-to-buffer": "^3.0.1",
     "vinyl-fs": "^0.3.13"
   },
@@ -21,7 +25,8 @@
   },
   "scripts": {
     "test": "node test.js",
-    "debug": "node-debug test.js"
+    "debug": "node-debug test.js",
+    "convert": "node index.js test"
   },
   "keywords": [
     "threejs",

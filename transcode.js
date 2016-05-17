@@ -1,12 +1,21 @@
 require('./fakeBrowserShim');
 
+var defaults = require('lodash').defaults;
+var parsePaths = require('./util/extract-paths');
+var parsePolygons = require('./util/extract-polygons');
+var pathsToMeshData = require('./util/paths-to-simplicial-complex-data.js');
+var polygonsToMeshData = require('./util/polygons-to-simplicial-complex-data.js');
+var SimplicialComplexGeometry = require('./util/SimplicialComplexGeometry');
+
+
 var debugLevel = 0;
 
 var toBuffer = require('typedarray-to-buffer'),
 	bufferArrayTypes = require('enum-buffer-array-types'),
 	THREE = require('./lib/three');
 
-
+var __geometries = {};
+var geometryGroup = [];
 // this is a hacked version of threejs. 
 // I've made a modification to export any geometry's geometryGroup (normally scoped private)
 // so that I can read the final typed arrays
@@ -20,7 +29,9 @@ camera.position.set(0, -10, -2000);
 camera.lookAt(new THREE.Vector3());
 
 exportGeometryGroup = function(_geometryGroup) {
-	geometryGroup = _geometryGroup;
+	Object.keys(_geometryGroup).forEach(function(key) {
+		geometryGroup[key] = _geometryGroup[key];
+	});
 };
 
 
@@ -186,10 +197,38 @@ var bufferLegend = {
 	'__colorArray' : 'color'
 }
 
-function transcodeJsonToBinary(jsonString, callback) {
+function transcodeSvgNodeToBinary(svgNode, callback) {
 
-	var jsonData = JSON.parse(jsonString);
-	var geometry = threeGeometryJSONLoader.parse(jsonData).geometry;
+	//var svgPaths = parsePaths(svg, params.separate);
+	var svgPaths = parsePaths(svgNode, false);
+	var pathsData;
+	//if(params.separate) {
+	//	var pathsDatas = svgPaths.map(function(svgSubPath) {
+	//		return pathsToMeshData(svgSubPath, {
+	//			delaunay: true,
+	//			simplify: params.simplify === undefined ? 0.5 : params.simplify
+	//		});
+	//	});
+	//	mergeComplexData.apply(this, pathsDatas);
+	//	pathsData = pathsDatas[0];
+	//} else {
+	pathsData = pathsToMeshData(svgPaths, {
+		delaunay: true,
+		simplify: false
+	});
+	//}
+	var svgPolygons = parsePolygons(svgNode);
+	var polygonsData = polygonsToMeshData(svgPolygons);
+	mergeComplexData(pathsData, polygonsData);
+	//if(params.pivot) {
+		var pivot = [30, 70];
+		pathsData.positions.forEach(function(vert) {
+			vert[0] -= pivot[0];
+			vert[1] -= pivot[1];
+		})
+	//}
+	//__geometries[path] = new SimplicialComplexGeometry(pathsData);
+	var geometry = new SimplicialComplexGeometry(pathsData);
 
 	var material = new THREE.MeshBasicMaterial({
 		vertexColors: THREE.VertexColors
@@ -200,13 +239,15 @@ function transcodeJsonToBinary(jsonString, callback) {
 	scene.remove(mesh);
 
 	var buffers = {};
+
 	Object.keys(geometryGroup).forEach(function(key) {
 		var prop = geometryGroup[key];
-		if(prop) {
+		if(prop !== undefined) {
 			if(prop.length !== undefined) {
-				// console.log(key, prop.length, prop instanceof Array);
 				var type = bufferArrayTypes.discoverType(prop);
-				if(bufferLegend[key] !== undefined) buffers[bufferLegend[key]] = prop;
+				if(bufferLegend[key] !== undefined) {
+					buffers[key] = prop;	
+				} 
 				// console.log(key, prop.length, enumName(type));
 			} else {
 				// console.log(key, prop);
@@ -229,7 +270,9 @@ function transcodeJsonToBinary(jsonString, callback) {
 		for (var i = 1; i < count; i++) {
 			if(arr[i] !== anythingThere) good = true;
 		};
-		if(!good) console.log('EMPTY:', name, anythingThere);
+		if(!good) {
+			console.log('EMPTY:', name, anythingThere);
+		}
 	}
 
 	Object.keys(buffers).forEach(function(key) {
@@ -241,7 +284,7 @@ function transcodeJsonToBinary(jsonString, callback) {
 			buffer: toBuffer(prop),
 			type: type
 		}
-		// previewValues(key, prop, 20);
+		previewValues(key, prop, 20);
 		checkValues(key, prop, 20);
 	})
 
@@ -250,19 +293,6 @@ function transcodeJsonToBinary(jsonString, callback) {
 	var error;
 
 	var monochrome = false;
-
-	var data = JSON.parse(jsonString);
-
-	// console.log(data.metadata);
-
-	// var buffers = {
-	// 	faces : createUintBuffer(data.faces),
-	// 	colors : createColorBuffer(data.colors, monochrome),
-	// 	// uvs : createFloatBuffers(data.uvs),
-	// 	uvs : createFloatBuffer(data.uvs[0]),
-	// 	normals : createFloatBuffer(data.normals),
-	// 	vertices : createFloatBuffer(data.vertices)
-	// }
 
 	var buffersArray = Object.keys(buffers).map(function(key) {
 		return giftWrapBuffer(key, buffers[key]);
@@ -274,4 +304,21 @@ function transcodeJsonToBinary(jsonString, callback) {
 	callback(error, outputBuffer);
 }
 
-module.exports = transcodeJsonToBinary;
+function mergeComplexData() {
+  var destination = arguments[0];
+  var destFaces = destination.cells;
+  var destVerts = destination.positions;
+  for (var i = 1; i < arguments.length; i++) {
+    var offset = destination.positions.length;
+    arguments[i].positions.forEach(function(vert) {
+      destVerts.push(vert);
+    });
+    arguments[i].cells.forEach(function(cell){
+      destFaces.push(cell.map(function(index){
+        return index + offset;
+      }));
+    });
+  }
+}
+
+module.exports = transcodeSvgNodeToBinary;
