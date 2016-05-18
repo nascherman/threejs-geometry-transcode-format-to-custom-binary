@@ -24,7 +24,7 @@ function transcodePipe (file, cb) {
   if (!svg) return cb(new Error('svg not present in resource'));
 
   
-  transcode(svg, function (err, buffer) {
+  transcode(svg, file.base, function (err, buffer) {
     file.contents = buffer
     file.path = file.path.replace('.svg', '.b3d')
     cb(err, file)

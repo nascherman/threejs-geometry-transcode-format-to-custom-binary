@@ -6,7 +6,7 @@ var parsePolygons = require('./util/extract-polygons');
 var pathsToMeshData = require('./util/paths-to-simplicial-complex-data.js');
 var polygonsToMeshData = require('./util/polygons-to-simplicial-complex-data.js');
 var SimplicialComplexGeometry = require('./util/SimplicialComplexGeometry');
-
+var fs = require('fs');
 
 var debugLevel = 0;
 
@@ -197,7 +197,7 @@ var bufferLegend = {
 	'__colorArray' : 'color'
 }
 
-function transcodeSvgNodeToBinary(svgNode, callback) {
+function transcodeSvgNodeToBinary(svgNode, path, callback) {
 
 	//var svgPaths = parsePaths(svg, params.separate);
 	var svgPaths = parsePaths(svgNode, false);
@@ -217,18 +217,20 @@ function transcodeSvgNodeToBinary(svgNode, callback) {
 		simplify: false
 	});
 	//}
-	var svgPolygons = parsePolygons(svgNode);
+	var svgPolygons = parsePolygons(svgNode.outerHTML);
 	var polygonsData = polygonsToMeshData(svgPolygons);
 	mergeComplexData(pathsData, polygonsData);
 	//if(params.pivot) {
-		var pivot = [30, 70];
-		pathsData.positions.forEach(function(vert) {
-			vert[0] -= pivot[0];
-			vert[1] -= pivot[1];
-		})
+		//var pivot = [1230, 100];
+		//pathsData.positions.forEach(function(vert) {
+		//	vert[0] -= pivot[0];
+		//	vert[1] -= pivot[1];
+		//})
 	//}
 	//__geometries[path] = new SimplicialComplexGeometry(pathsData);
 	var geometry = new SimplicialComplexGeometry(pathsData);
+
+
 
 	var material = new THREE.MeshBasicMaterial({
 		vertexColors: THREE.VertexColors
@@ -246,12 +248,9 @@ function transcodeSvgNodeToBinary(svgNode, callback) {
 			if(prop.length !== undefined) {
 				var type = bufferArrayTypes.discoverType(prop);
 				if(bufferLegend[key] !== undefined) {
-					buffers[key] = prop;	
-				} 
-				// console.log(key, prop.length, enumName(type));
-			} else {
-				// console.log(key, prop);
-			}
+					 buffers[bufferLegend[key]] = prop;
+				} 	
+			} 
 		}
 	});
 
@@ -287,8 +286,6 @@ function transcodeSvgNodeToBinary(svgNode, callback) {
 		previewValues(key, prop, 20);
 		checkValues(key, prop, 20);
 	})
-
-
 
 	var error;
 
