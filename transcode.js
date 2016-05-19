@@ -199,35 +199,22 @@ var bufferLegend = {
 
 function transcodeSvgNodeToBinary(svgNode, path, callback) {
 
-	//var svgPaths = parsePaths(svg, params.separate);
-	var svgPaths = parsePaths(svgNode, false);
+	var svgPaths = parsePaths(svgNode, true);
 	var pathsData;
-	//if(params.separate) {
-	//	var pathsDatas = svgPaths.map(function(svgSubPath) {
-	//		return pathsToMeshData(svgSubPath, {
-	//			delaunay: true,
-	//			simplify: params.simplify === undefined ? 0.5 : params.simplify
-	//		});
-	//	});
-	//	mergeComplexData.apply(this, pathsDatas);
-	//	pathsData = pathsDatas[0];
-	//} else {
-	pathsData = pathsToMeshData(svgPaths, {
-		delaunay: true,
-		simplify: false
-	});
-	//}
+
+		var pathsDatas = svgPaths.map(function(svgSubPath) {
+			return pathsToMeshData(svgSubPath, {
+				delaunay: true,
+				simplify: true
+			});
+		});
+		mergeComplexData.apply(this, pathsDatas);
+		pathsData = pathsDatas[0];
+
 	var svgPolygons = parsePolygons(svgNode.outerHTML);
 	var polygonsData = polygonsToMeshData(svgPolygons);
 	mergeComplexData(pathsData, polygonsData);
-	//if(params.pivot) {
-		//var pivot = [1230, 100];
-		//pathsData.positions.forEach(function(vert) {
-		//	vert[0] -= pivot[0];
-		//	vert[1] -= pivot[1];
-		//})
-	//}
-	//__geometries[path] = new SimplicialComplexGeometry(pathsData);
+
 	var geometry = new SimplicialComplexGeometry(pathsData);
 
 
