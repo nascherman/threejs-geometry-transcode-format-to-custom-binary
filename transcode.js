@@ -191,10 +191,7 @@ var swizzleYZLegend = [
 
 var bufferLegend = {
 	'__faceArray' : 'index',
-	'__vertexArray' : 'position',
-	'__normalArray' : 'normal',
-	'__uvArray' : 'uv',
-	'__colorArray' : 'color'
+	'__vertexArray' : 'position'
 }
 
 function transcodeSvgNodeToBinary(svgNode, path, callback) {
