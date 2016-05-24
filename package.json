@@ -47,6 +47,9 @@
     "url": "git://github.com/bunnybones1/threejs-geometry-transcode-format-to-custom-binary.git"
   },
   "homepage": "https://github.com/bunnybones1/threejs-geometry-transcode-format-to-custom-binary",
+  "bin": {
+    "svg-transcode": "./index.js"
+  },
   "bugs": {
     "url": "https://github.com/bunnybones1/threejs-geometry-transcode-format-to-custom-binary/issues"
   }
