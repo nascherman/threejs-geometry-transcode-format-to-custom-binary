@@ -1,7 +1,7 @@
 {
-  "name": "threejs-geometry-transcode-format-to-custom-binary",
+  "name": "threejs-geometry-transcode-svg-to-custom-binary",
   "version": "2.0.1",
-  "description": "A module to help translate threejs json mesh geometry into a custom binary format.",
+  "description": "A module to help translate svg into a custom binary format to be used as geometry.",
   "main": "index.js",
   "license": "MIT",
   "author": {

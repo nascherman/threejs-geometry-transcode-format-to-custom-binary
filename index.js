@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 var directorySearch = require('directory-search');
 MockBrowser = require('mock-browser').mocks.MockBrowser;
 window = MockBrowser.createWindow();
