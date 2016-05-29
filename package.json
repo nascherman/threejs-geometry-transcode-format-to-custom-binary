@@ -31,9 +31,7 @@
     "threejs-managed-view": "^4.0.1"
   },
   "scripts": {
-    "test": "node test.js",
-    "debug": "node-debug test.js",
-    "convert": "node index.js test"
+    "test": "node index.js"
   },
   "keywords": [
     "threejs",
@@ -44,13 +42,13 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/bunnybones1/threejs-geometry-transcode-format-to-custom-binary.git"
+    "url": "git://github.com/nascherman/threejs-geometry-transcode-svg-to-custom-binary.git"
   },
-  "homepage": "https://github.com/bunnybones1/threejs-geometry-transcode-format-to-custom-binary",
+  "homepage": "https://github.com/nascherman/threejs-geometry-transcode-svg-to-custom-binary",
   "bin": {
     "svg-transcode": "./index.js"
   },
   "bugs": {
-    "url": "https://github.com/bunnybones1/threejs-geometry-transcode-format-to-custom-binary/issues"
+    "url": "https://github.com/nascherman/threejs-geometry-transcode-svg-to-custom-binary/issues"
   }
 }
