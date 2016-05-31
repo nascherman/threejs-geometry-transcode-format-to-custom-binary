@@ -2,10 +2,7 @@ require('./fakeBrowserShim');
 
 var defaults = require('lodash').defaults;
 var parsePaths = require('./util/extract-paths');
-var parsePolygons = require('./util/extract-polygons');
-var pathsToMeshData = require('./util/paths-to-simplicial-complex-data.js');
-var polygonsToMeshData = require('./util/polygons-to-simplicial-complex-data.js');
-var SimplicialComplexGeometry = require('./util/SimplicialComplexGeometry');
+var pathsToShape = require('./util/paths-to-shape');
 var fs = require('fs');
 
 var debugLevel = 0;
@@ -39,7 +36,7 @@ function createFloatBuffers(arrays) {
 	var buffers = [];
 	arrays.forEach(function(array){
 		buffers.push(createFloatBuffer(array));
-	})
+	});
 	return buffers;
 }
 
@@ -72,7 +69,7 @@ function createUintBuffer(array) {
 	var largest = 0;
 	for (var i = array.length - 1; i >= 0; i--) {
 		largest = Math.max(largest, array[i]);
-	};
+	}
 	var bytesPerElement = 0;
 	if(largest < max8) bytesPerElement = 1;
 	else if(largest < max16) bytesPerElement = 2;
@@ -191,30 +188,17 @@ var swizzleYZLegend = [
 
 var bufferLegend = {
 	'__faceArray' : 'index',
-	'__vertexArray' : 'position'
-}
+	'__vertexArray' : 'position',
+	'__normalArray' : 'normal',
+	'__uvArray' : 'uv',
+	'__colorArray' : 'color'
+};
 
 function transcodeSvgNodeToBinary(svgNode, path, callback) {
 
-	var svgPaths = parsePaths(svgNode, true);
-	var pathsData;
+	var svgPaths = parsePaths(svgNode, false);
 
-		var pathsDatas = svgPaths.map(function(svgSubPath) {
-			return pathsToMeshData(svgSubPath, {
-				delaunay: true,
-				simplify: true
-			});
-		});
-		mergeComplexData.apply(this, pathsDatas);
-		pathsData = pathsDatas[0];
-
-	var svgPolygons = parsePolygons(svgNode.outerHTML);
-	var polygonsData = polygonsToMeshData(svgPolygons);
-	mergeComplexData(pathsData, polygonsData);
-
-	var geometry = new SimplicialComplexGeometry(pathsData);
-
-
+	var geometry = pathsToShape(svgPaths);
 
 	var material = new THREE.MeshBasicMaterial({
 		vertexColors: THREE.VertexColors
