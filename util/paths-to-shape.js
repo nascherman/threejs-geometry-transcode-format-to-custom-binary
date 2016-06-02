@@ -13,13 +13,23 @@ function svgPathsToShape (svgPaths, opt) {
     simplify: 0,
     scale: 1
   }, opt);
-  
+/*  
+var bevelThickness = options.bevelThickness !== undefined ? options.bevelThickness : 6; // 10
+var bevelSize = options.bevelSize !== undefined ? options.bevelSize : bevelThickness - 2; // 8
+var bevelSegments = options.bevelSegments !== undefined ? options.bevelSegments : 3;
+var bevelEnabled = options.bevelEnabled !== undefined ? options.bevelEnabled : true; // false
+*/
   var extrudeSettings = {
-    amount: 0.1,
-    steps: 1
+    amount: 1,
+    steps: 1,
+    bevelEnabled: true,
+    bevelSize: 1,
+    bevelThickness: 1,
+    bevelSegments: 2
   };
 
   var geo = new THREE.Geometry();
+  //svgPaths = simplify(svgPaths)
   svgPaths = svgPaths.replace(/M/gi, ';M');
   svgPaths = svgPaths.split(';');
   var shapeGeo = [];
@@ -28,8 +38,8 @@ function svgPathsToShape (svgPaths, opt) {
 
   svgPaths.forEach(function(path, i) {
     if(path.length === 0) return;
-
-    shapes.push(transformSVGPath(path) );
+    var shapePath = transformSVGPath(path);
+    shapes.push( shapePath);
     
     shapeGeo.push(new THREE.ShapeGeometry(shapes[i-1] ) );
   });

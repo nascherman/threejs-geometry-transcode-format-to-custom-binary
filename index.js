@@ -10,12 +10,8 @@ if(!process.argv[2]) {
   console.log('must provide a path');
   return;
 }
-else if(!process.argv[3]) {
-  console.log('must provide a file format');
-  return; 
-}
-
-directorySearch(process.argv[2], '.' + process.argv[3], function(err, results) {
+ 
+directorySearch(process.argv[2], '.svg', function(err, results) {
   if(err) {
     console.log('error ' + err);
     return;

@@ -3,6 +3,8 @@ var  fs = require('vinyl-fs');
 var path = require('path');
 var zlib = require('zlib');
 var map = require('map-stream');
+var SVGO = require('svgo');
+var svgo = new SVGO();
 document = MockBrowser.createDocument();
 
 
@@ -22,13 +24,13 @@ function transcodePipe (file, cb) {
   div.innerHTML = file.contents;
   var svg = div.querySelector('svg');
   if (!svg) return cb(new Error('svg not present in resource'));
-
   
   transcode(svg, file.base, function (err, buffer) {
     file.contents = buffer
     file.path = file.path.replace('.svg', '.b3d')
     cb(err, file)
-  })
+  });
+
 }
 
 function deflate (file, cb) {
